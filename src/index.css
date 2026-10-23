@@ -25,6 +25,13 @@ main {
   color: #57606a;
 }
 
+.error {
+  color: #cf222e;
+  background: #ffebe9;
+  border: 1px solid #ff8182;
+  border-radius: 8px;
+}
+
 .post-list {
   display: grid;
   gap: 1rem;
