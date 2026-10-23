@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { fetchPosts } from './api/postsApi.js'
 import {
   FETCH_ERROR,
@@ -7,11 +7,19 @@ import {
   initialState,
   postsReducer,
 } from './reducer/postsReducer.js'
+import FilterForm from './components/FilterForm.jsx'
 import PostList from './components/PostList.jsx'
 
 function App() {
   const [state, dispatch] = useReducer(postsReducer, initialState)
+  const [titleFilter, setTitleFilter] = useState('')
   const { posts, loading, error } = state
+
+  // Derived state: recomputed on every render from the source posts, never stored.
+  const normalizedFilter = titleFilter.trim().toLowerCase()
+  const visiblePosts = posts.filter((post) =>
+    post.title.toLowerCase().includes(normalizedFilter),
+  )
 
   useEffect(() => {
     const controller = new AbortController()
@@ -46,6 +54,8 @@ function App() {
     <main>
       <h1>Post Dashboard</h1>
 
+      <FilterForm value={titleFilter} onChange={setTitleFilter} />
+
       {loading && <p className="status">Loading posts...</p>}
 
       {!loading && error && (
@@ -54,7 +64,7 @@ function App() {
         </p>
       )}
 
-      {!loading && !error && <PostList posts={posts} />}
+      {!loading && !error && <PostList posts={visiblePosts} />}
     </main>
   )
 }
